@@ -1,0 +1,35 @@
+name: Release Packages
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        description: Version
+        type: string
+
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Version
+        required: true
+
+jobs:
+  release-react:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Release React Package
+        uses: lucide/release@v1
+        with:
+          # required inputs
+          package-type: react
+          package-name: '@jguddas/icon-library-example-react'
+          npm-token: ${{ inputs.NPM_TOKEN || secrets.NPM_TOKEN }}
+          version-ref: ${{ inputs.version || github.event.inputs.version || github.ref }}
+          # optional inputs
+          package-template: '.github/package-template.json' # No default
+          icons-directory: ./icons # Defaults to ./icons
